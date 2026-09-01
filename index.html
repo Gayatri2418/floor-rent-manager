@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Room Manager</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+    <div>
+
+        <h1>🏠 Room Manager</h1>
+
+        <p>
+            Building & Tenant Management
+        </p>
+
+    </div>
+
+
+    <button
+        class="add-main-btn"
+        onclick="openAddFloorModal()">
+
+        + Add Floor
+
+    </button>
+
+</header>
+
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="container">
+
+
+    <!-- ================= FLOOR PAGE ================= -->
+
+    <section id="floorPage">
+
+
+        <div class="page-title">
+
+            <h2>
+                My Building
+            </h2>
+
+            <p>
+                Select a floor to view its rooms
+            </p>
+
+        </div>
+
+
+
+        <!-- ================= STATISTICS ================= -->
+
+        <div class="statistics">
+
+
+            <div class="stat-card">
+
+                <span>🏢</span>
+
+                <div>
+
+                    <small>
+                        Total Floors
+                    </small>
+
+                    <strong id="totalFloors">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <span>🚪</span>
+
+                <div>
+
+                    <small>
+                        Total Rooms
+                    </small>
+
+                    <strong id="totalRooms">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <span>👥</span>
+
+                <div>
+
+                    <small>
+                        Total People
+                    </small>
+
+                    <strong id="totalPeople">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <span>💰</span>
+
+                <div>
+
+                    <small>
+                        Pending Rent
+                    </small>
+
+                    <strong id="totalPendingRent">
+                        ₹0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================= RENT REMINDERS ================= -->
+
+        <div class="reminder-section">
+
+
+            <div class="reminder-header">
+
+                <div>
+
+                    <h2>
+                        🔔 Rent Reminders
+                    </h2>
+
+                    <p>
+                        Check pending and upcoming rent payments
+                    </p>
+
+                </div>
+
+
+                <span
+                    id="reminderCount"
+                    class="reminder-count">
+
+                    0
+
+                </span>
+
+            </div>
+
+
+
+            <div
+                id="reminderList"
+                class="reminder-list">
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================= FLOOR LIST ================= -->
+
+        <div
+            id="floorList"
+            class="floor-grid">
+
+        </div>
+
+
+    </section>
+
+
+
+
+    <!-- ================= ROOM PAGE ================= -->
+
+    <section
+        id="roomPage"
+        class="hidden">
+
+
+        <button
+            class="back-btn"
+            onclick="showFloorPage()">
+
+            ← Back to Floors
+
+        </button>
+
+
+
+        <div class="page-heading">
+
+
+            <div>
+
+                <h2 id="selectedFloorName"></h2>
+
+                <p id="floorRoomCount"></p>
+
+            </div>
+
+
+
+            <button
+                class="primary-btn"
+                onclick="openAddRoomModal()">
+
+                + Add Room
+
+            </button>
+
+
+        </div>
+
+
+
+        <div
+            id="roomList"
+            class="room-grid">
+
+        </div>
+
+
+    </section>
+
+
+
+
+    <!-- ================= PEOPLE PAGE ================= -->
+
+    <section
+        id="peoplePage"
+        class="hidden">
+
+
+        <button
+            class="back-btn"
+            onclick="showRoomPage()">
+
+            ← Back to Rooms
+
+        </button>
+
+
+
+        <div class="page-heading">
+
+
+            <div>
+
+                <h2 id="selectedRoomName"></h2>
+
+                <p id="roomPeopleCount"></p>
+
+                <div class="room-actions">
+    <button class="edit-room-btn"
+     onclick="editCurrentRoom()">
+        ✏️ Edit Room
+    </button>
+
+    <button class="delete-room-btn" onclick="deleteRoom()">
+        🗑️ Delete Room
+    </button>
+</div>
+
+            </div>
+
+
+
+            <button
+                class="primary-btn"
+                onclick="openAddPersonModal()">
+
+                + Add Person
+
+            </button>
+
+
+        </div>
+
+
+
+        <div
+            id="peopleList"
+            class="people-grid">
+
+        </div>
+
+
+    </section>
+
+
+
+
+    <!-- ================= PERSON DETAILS ================= -->
+
+    <section
+        id="detailsPage"
+        class="hidden">
+
+
+        <button
+            class="back-btn"
+            onclick="showPeoplePage()">
+
+            ← Back to People
+
+        </button>
+
+
+
+        <div class="details-container">
+
+
+            <!-- ================= PERSON HEADER ================= -->
+
+            <div class="details-header">
+
+
+                <div class="person-icon">
+
+                    👤
+
+                </div>
+
+
+                <div>
+
+                    <h2 id="detailsName"></h2>
+
+                    <p id="detailsRoom"></p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ================= DELETE PERSON ================= -->
+
+            <div class="person-action-buttons">
+
+                <button
+                    class="delete-person-btn"
+                    onclick="deletePerson()">
+
+                    🗑️ Delete Person
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ================= PERSON INFORMATION ================= -->
+
+            <div class="details-grid">
+
+
+                <div class="detail-box">
+
+                    <label>
+                        Full Name
+                    </label>
+
+                    <p id="detailFullName"></p>
+
+                </div>
+
+
+
+                <div class="detail-box">
+
+                    <label>
+                        Phone Number
+                    </label>
+
+                    <p id="detailPhone"></p>
+
+                </div>
+
+
+
+                <div class="detail-box">
+
+                    <label>
+                        Person Type
+                    </label>
+
+                    <p id="detailType"></p>
+
+                </div>
+
+
+
+                <div class="detail-box">
+
+                    <label>
+                        Joining Date
+                    </label>
+
+                    <p id="detailJoiningDate"></p>
+
+                </div>
+
+
+
+                <div class="detail-box full-width">
+
+                    <label>
+                        Permanent Address
+                    </label>
+
+                    <p id="detailAddress"></p>
+
+                </div>
+
+
+
+                <div class="detail-box">
+
+                    <label>
+                        Monthly Rent
+                    </label>
+
+                    <p id="detailRent"></p>
+
+                </div>
+
+
+
+                <div class="detail-box">
+
+                    <label>
+                        Security Deposit
+                    </label>
+
+                    <p id="detailDeposit"></p>
+
+                </div>
+
+
+
+                <div class="detail-box">
+
+                    <label>
+                        Rent Due Day
+                    </label>
+
+                    <p id="detailDueDate"></p>
+
+                </div>
+
+
+            </div>
+
+
+
+
+            <!-- ================= RENT MANAGEMENT ================= -->
+
+            <div class="rent-section">
+
+
+                <div class="rent-title">
+
+                    <h3>
+                        💰 Rent Management
+                    </h3>
+
+                </div>
+
+
+
+                <!-- CURRENT MONTH -->
+
+                <div
+                    id="currentRentBox"
+                    class="current-rent-box">
+
+                </div>
+
+
+
+                <!-- RENT HISTORY -->
+
+                <h3 class="history-heading">
+
+                    📋 Rent History
+
+                </h3>
+
+
+                <div
+                    id="rentHistory"
+                    class="rent-history">
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+
+    <!-- ================= ADD FLOOR MODAL ================= -->
+
+    <div
+        id="floorModal"
+        class="modal">
+
+
+        <div class="modal-content">
+
+
+            <button
+                class="close-btn"
+                onclick="closeModal('floorModal')">
+
+                ×
+
+            </button>
+
+
+            <h2>
+                Add Floor
+            </h2>
+
+
+            <form
+                onsubmit="addFloor(event)">
+
+
+                <label>
+                    Floor Name
+                </label>
+
+
+                <input
+                    type="text"
+                    id="floorName"
+                    placeholder="Example: Ground Floor"
+                    required>
+
+
+                <button
+                    class="save-btn"
+                    type="submit">
+
+                    Save Floor
+
+                </button>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- ================= ADD ROOM MODAL ================= -->
+
+    <div
+        id="roomModal"
+        class="modal">
+
+
+        <div class="modal-content">
+
+
+            <button
+                class="close-btn"
+                onclick="closeModal('roomModal')">
+
+                ×
+
+            </button>
+
+
+            <h2>
+                Add Room
+            </h2>
+
+
+            <form
+                onsubmit="addRoom(event)">
+
+
+                <label>
+                    Room Number
+                </label>
+
+
+                <input
+                    type="text"
+                    id="roomNumber"
+                    placeholder="Example: 101"
+                    required>
+
+
+                <button
+                    class="save-btn"
+                    type="submit">
+
+                    Save Room
+
+                </button>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- ================= ADD PERSON MODAL ================= -->
+
+    <div
+        id="personModal"
+        class="modal">
+
+       <!-- ================= EDIT ROOM MODAL ================= -->
+
+<div id="editRoomModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2>✏️ Edit Room</h2>
+
+        <form onsubmit="editRoom(event)">
+
+            <label>
+                Room Number
+            </label>
+
+            <input
+                type="text"
+                id="editRoomNumber"
+                placeholder="Enter room number"
+                required
+            >
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    onclick="closeModal('editRoomModal')">
+                    Cancel
+                </button>
+
+                <button type="submit">
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div> 
+
+        <div
+            class="modal-content large-modal">
+
+
+            <button
+                class="close-btn"
+                onclick="closeModal('personModal')">
+
+                ×
+
+            </button>
+
+
+            <h2>
+                Add Person
+            </h2>
+
+
+
+            <form
+                onsubmit="addPerson(event)">
+
+
+                <label>
+                    Full Name
+                </label>
+
+
+                <input
+                    type="text"
+                    id="personName"
+                    placeholder="Enter full name"
+                    required>
+
+
+
+                <label>
+                    Phone Number
+                </label>
+
+
+                <input
+                    type="tel"
+                    id="personPhone"
+                    placeholder="Enter phone number">
+
+
+
+                <label>
+                    Person Type
+                </label>
+
+
+                <select id="personType">
+
+
+                    <option value="Student">
+                        Student
+                    </option>
+
+
+                    <option value="Family Member">
+                        Family Member
+                    </option>
+
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+
+                </select>
+
+
+
+                <label>
+                    Permanent Address
+                </label>
+
+
+                <textarea
+                    id="personAddress"
+                    placeholder="Enter permanent address"
+                    rows="3"></textarea>
+
+
+
+                <label>
+                    Joining Date
+                </label>
+
+
+                <input
+                    type="date"
+                    id="joiningDate">
+
+
+
+                <label>
+                    Monthly Rent
+                </label>
+
+
+                <input
+                    type="number"
+                    id="monthlyRent"
+                    placeholder="Example: 5000"
+                    min="0">
+
+
+
+                <label>
+                    Security Deposit
+                </label>
+
+
+                <input
+                    type="number"
+                    id="securityDeposit"
+                    placeholder="Example: 10000"
+                    min="0">
+
+
+
+                <label>
+                    Rent Due Day
+                </label>
+
+
+                <input
+                    type="number"
+                    id="rentDueDay"
+                    placeholder="Example: 5"
+                    min="1"
+                    max="31">
+
+
+
+                <button
+                    class="save-btn"
+                    type="submit">
+
+                    Save Person
+
+                </button>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
