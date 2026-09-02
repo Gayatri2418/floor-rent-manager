@@ -1,6 +1,15 @@
 /* =====================================================
    FLOOR & RENT MANAGER - VERSION 3
-   Rent Reminders + Delete Person
+   Floor → Room → People → Details
+   Includes:
+   ✅ Add Floor
+   ✅ Add Room
+   ✅ Add Person
+   ✅ Person Details
+   ✅ Rent Payment
+   ✅ Rent History
+   ✅ Rent Reminders
+   ✅ Delete Person
    ===================================================== */
 
 
@@ -38,16 +47,16 @@ function saveData() {
 function hideAllPages() {
 
     document.getElementById("floorPage")
-        .classList.add("hidden");
+        ?.classList.add("hidden");
 
     document.getElementById("roomPage")
-        .classList.add("hidden");
+        ?.classList.add("hidden");
 
     document.getElementById("peoplePage")
-        .classList.add("hidden");
+        ?.classList.add("hidden");
 
     document.getElementById("detailsPage")
-        .classList.add("hidden");
+        ?.classList.add("hidden");
 
 }
 
@@ -57,10 +66,9 @@ function showFloorPage() {
     hideAllPages();
 
     document.getElementById("floorPage")
-        .classList.remove("hidden");
+        ?.classList.remove("hidden");
 
     displayFloors();
-
     displayRentReminders();
 
 }
@@ -71,7 +79,7 @@ function showRoomPage() {
     hideAllPages();
 
     document.getElementById("roomPage")
-        .classList.remove("hidden");
+        ?.classList.remove("hidden");
 
     displayRooms();
 
@@ -83,7 +91,7 @@ function showPeoplePage() {
     hideAllPages();
 
     document.getElementById("peoplePage")
-        .classList.remove("hidden");
+        ?.classList.remove("hidden");
 
     displayPeople();
 
@@ -95,19 +103,21 @@ function showDetailsPage() {
     hideAllPages();
 
     document.getElementById("detailsPage")
-        .classList.remove("hidden");
+        ?.classList.remove("hidden");
 
 }
 
 
 /* =====================================================
-   FLOOR
+   FLOOR DISPLAY
    ===================================================== */
 
 function displayFloors() {
 
     const floorList =
         document.getElementById("floorList");
+
+    if (!floorList) return;
 
     floorList.innerHTML = "";
 
@@ -116,15 +126,11 @@ function displayFloors() {
 
         floorList.innerHTML = `
             <div class="empty-state">
-
-                <h3>
-                    No floors added yet
-                </h3>
+                <h3>No floors added yet</h3>
 
                 <p>
                     Click "+ Add Floor" to create your first floor.
                 </p>
-
             </div>
         `;
 
@@ -167,7 +173,7 @@ function displayFloors() {
             </div>
 
             <h3>
-                ${floor.name}
+                ${escapeHTML(floor.name)}
             </h3>
 
             <p>
@@ -178,26 +184,7 @@ function displayFloors() {
                 👥 ${totalPeople} People
             </p>
 
-            <div class="card-actions">
-
-        <button
-            class="edit-btn"
-            onclick="event.stopPropagation(); editFloor(${index})">
-
-            ✏️ Edit
-
-        </button>
-
-        <button
-            class="delete-floor-btn"
-            onclick="event.stopPropagation(); deleteFloor(${index})">
-
-            🗑️ Delete
-
-        </button>
-
-    </div>
- `;
+        `;
 
 
         floorList.appendChild(card);
@@ -227,7 +214,7 @@ function updateStatistics() {
 
         floor.rooms.forEach(room => {
 
-            totalRooms += 1;
+            totalRooms++;
 
             totalPeople += room.people.length;
 
@@ -252,21 +239,50 @@ function updateStatistics() {
     });
 
 
-    document.getElementById("totalFloors")
-        .textContent = floors.length;
+    const totalFloorsElement =
+        document.getElementById("totalFloors");
+
+    const totalRoomsElement =
+        document.getElementById("totalRooms");
+
+    const totalPeopleElement =
+        document.getElementById("totalPeople");
+
+    const totalPendingRentElement =
+        document.getElementById("totalPendingRent");
 
 
-    document.getElementById("totalRooms")
-        .textContent = totalRooms;
+    if (totalFloorsElement) {
+
+        totalFloorsElement.textContent =
+            floors.length;
+
+    }
 
 
-    document.getElementById("totalPeople")
-        .textContent = totalPeople;
+    if (totalRoomsElement) {
+
+        totalRoomsElement.textContent =
+            totalRooms;
+
+    }
 
 
-    document.getElementById("totalPendingRent")
-        .textContent =
-        "₹" + totalPendingRent.toLocaleString("en-IN");
+    if (totalPeopleElement) {
+
+        totalPeopleElement.textContent =
+            totalPeople;
+
+    }
+
+
+    if (totalPendingRentElement) {
+
+        totalPendingRentElement.textContent =
+            "₹" +
+            totalPendingRent.toLocaleString("en-IN");
+
+    }
 
 }
 
@@ -277,8 +293,14 @@ function updateStatistics() {
 
 function openAddFloorModal() {
 
-    document.getElementById("floorModal")
-        .style.display = "flex";
+    const modal =
+        document.getElementById("floorModal");
+
+    if (modal) {
+
+        modal.style.display = "flex";
+
+    }
 
 }
 
@@ -288,9 +310,12 @@ function addFloor(event) {
     event.preventDefault();
 
 
+    const input =
+        document.getElementById("floorName");
+
+
     const name =
-        document.getElementById("floorName")
-            .value.trim();
+        input.value.trim();
 
 
     if (!name) {
@@ -300,22 +325,7 @@ function addFloor(event) {
         return;
 
     }
-// Prevent duplicate floor names
-    const duplicate =
-        floors.some(
-            floor =>
-                floor.name.toLowerCase() === name.toLowerCase()
-        );
 
-
-    if (duplicate) {
-
-        alert(
-            `"${name}" already exists. Please use a different floor name.`
-        );
-
-        return;
-    }
 
     floors.push({
 
@@ -329,16 +339,13 @@ function addFloor(event) {
     saveData();
 
 
-    document.getElementById("floorName")
-        .value = "";
+    input.value = "";
 
 
     closeModal("floorModal");
 
 
     displayFloors();
-
-    displayRentReminders();
 
 }
 
@@ -356,13 +363,31 @@ function openFloor(index) {
         floors[index];
 
 
-    document.getElementById("selectedFloorName")
-        .textContent = floor.name;
+    if (!floor) return;
 
 
-    document.getElementById("floorRoomCount")
-        .textContent =
-        `${floor.rooms.length} Rooms`;
+    const nameElement =
+        document.getElementById("selectedFloorName");
+
+
+    const countElement =
+        document.getElementById("floorRoomCount");
+
+
+    if (nameElement) {
+
+        nameElement.textContent =
+            floor.name;
+
+    }
+
+
+    if (countElement) {
+
+        countElement.textContent =
+            `${floor.rooms.length} Rooms`;
+
+    }
 
 
     showRoomPage();
@@ -371,13 +396,16 @@ function openFloor(index) {
 
 
 /* =====================================================
-   ROOMS
+   DISPLAY ROOMS
    ===================================================== */
 
 function displayRooms() {
 
     const roomList =
         document.getElementById("roomList");
+
+
+    if (!roomList) return;
 
 
     roomList.innerHTML = "";
@@ -393,6 +421,7 @@ function displayRooms() {
     if (floor.rooms.length === 0) {
 
         roomList.innerHTML = `
+
             <div class="empty-state">
 
                 <h3>
@@ -404,6 +433,7 @@ function displayRooms() {
                 </p>
 
             </div>
+
         `;
 
         return;
@@ -430,11 +460,11 @@ function displayRooms() {
         card.innerHTML = `
 
             <div class="room-number">
-                🚪 Room ${room.number}
+                🚪 Room ${escapeHTML(room.number)}
             </div>
 
             <div class="room-info">
-                Floor: ${floor.name}
+                Floor: ${escapeHTML(floor.name)}
             </div>
 
             <div class="room-people">
@@ -465,8 +495,14 @@ function displayRooms() {
 
 function openAddRoomModal() {
 
-    document.getElementById("roomModal")
-        .style.display = "flex";
+    const modal =
+        document.getElementById("roomModal");
+
+    if (modal) {
+
+        modal.style.display = "flex";
+
+    }
 
 }
 
@@ -476,9 +512,12 @@ function addRoom(event) {
     event.preventDefault();
 
 
+    const input =
+        document.getElementById("roomNumber");
+
+
     const number =
-        document.getElementById("roomNumber")
-            .value.trim();
+        input.value.trim();
 
 
     if (!number) {
@@ -494,6 +533,15 @@ function addRoom(event) {
         floors[selectedFloorIndex];
 
 
+    if (!floor) {
+
+        alert("Please select a floor first.");
+
+        return;
+
+    }
+
+
     floor.rooms.push({
 
         number: number,
@@ -506,8 +554,7 @@ function addRoom(event) {
     saveData();
 
 
-    document.getElementById("roomNumber")
-        .value = "";
+    input.value = "";
 
 
     closeModal("roomModal");
@@ -516,9 +563,19 @@ function addRoom(event) {
     displayRooms();
 
 
-    document.getElementById("floorRoomCount")
-        .textContent =
-        `${floor.rooms.length} Rooms`;
+    const countElement =
+        document.getElementById("floorRoomCount");
+
+
+    if (countElement) {
+
+        countElement.textContent =
+            `${floor.rooms.length} Rooms`;
+
+    }
+
+
+    updateStatistics();
 
 }
 
@@ -532,19 +589,42 @@ function openRoom(index) {
     selectedRoomIndex = index;
 
 
+    const floor =
+        floors[selectedFloorIndex];
+
+
+    if (!floor) return;
+
+
     const room =
-        floors[selectedFloorIndex]
-            .rooms[index];
+        floor.rooms[index];
 
 
-    document.getElementById("selectedRoomName")
-        .textContent =
-        `Room ${room.number}`;
+    if (!room) return;
 
 
-    document.getElementById("roomPeopleCount")
-        .textContent =
-        `${room.people.length} People`;
+    const roomName =
+        document.getElementById("selectedRoomName");
+
+
+    const peopleCount =
+        document.getElementById("roomPeopleCount");
+
+
+    if (roomName) {
+
+        roomName.textContent =
+            `Room ${room.number}`;
+
+    }
+
+
+    if (peopleCount) {
+
+        peopleCount.textContent =
+            `${room.people.length} People`;
+
+    }
 
 
     showPeoplePage();
@@ -553,7 +633,7 @@ function openRoom(index) {
 
 
 /* =====================================================
-   PEOPLE
+   DISPLAY PEOPLE
    ===================================================== */
 
 function displayPeople() {
@@ -562,12 +642,21 @@ function displayPeople() {
         document.getElementById("peopleList");
 
 
+    if (!peopleList) return;
+
+
     peopleList.innerHTML = "";
 
 
+    const floor =
+        floors[selectedFloorIndex];
+
+
+    if (!floor) return;
+
+
     const room =
-        floors[selectedFloorIndex]
-            .rooms[selectedRoomIndex];
+        floor.rooms[selectedRoomIndex];
 
 
     if (!room) return;
@@ -576,6 +665,7 @@ function displayPeople() {
     if (room.people.length === 0) {
 
         peopleList.innerHTML = `
+
             <div class="empty-state">
 
                 <h3>
@@ -587,6 +677,7 @@ function displayPeople() {
                 </p>
 
             </div>
+
         `;
 
         return;
@@ -619,35 +710,14 @@ function displayPeople() {
             <div>
 
                 <h3>
-                    ${person.name}
+                    ${escapeHTML(person.name)}
                 </h3>
 
                 <p>
-                    ${person.type}
+                    ${escapeHTML(person.type || "Resident")}
                 </p>
 
             </div>
-
-            <div class="person-actions">
-
-        <button
-            class="edit-btn"
-            onclick="event.stopPropagation(); editPerson(${index})">
-
-            ✏️ Edit
-
-        </button>
-
-        <button
-            class="delete-person-btn"
-            onclick="event.stopPropagation(); selectedPersonIndex = ${index}; deletePerson()">
-
-            🗑️ Delete
-
-        </button>
-
-    </div>
-
 
         `;
 
@@ -665,8 +735,14 @@ function displayPeople() {
 
 function openAddPersonModal() {
 
-    document.getElementById("personModal")
-        .style.display = "flex";
+    const modal =
+        document.getElementById("personModal");
+
+    if (modal) {
+
+        modal.style.display = "flex";
+
+    }
 
 }
 
@@ -679,45 +755,67 @@ function addPerson(event) {
     const person = {
 
         name:
-            document.getElementById("personName")
-                .value.trim(),
+            getValue("personName"),
 
         phone:
-            document.getElementById("personPhone")
-                .value.trim(),
+            getValue("personPhone"),
 
         type:
-            document.getElementById("personType")
-                .value,
+            getValue("personType"),
 
         address:
-            document.getElementById("personAddress")
-                .value.trim(),
+            getValue("personAddress"),
 
         joiningDate:
-            document.getElementById("joiningDate")
-                .value,
+            getValue("joiningDate"),
 
         monthlyRent:
-            document.getElementById("monthlyRent")
-                .value,
+            getValue("monthlyRent"),
 
         securityDeposit:
-            document.getElementById("securityDeposit")
-                .value,
+            getValue("securityDeposit"),
 
         rentDueDay:
-            document.getElementById("rentDueDay")
-                .value,
+            getValue("rentDueDay"),
 
         rentHistory: []
 
     };
 
 
+    if (!person.name) {
+
+        alert("Please enter person's name.");
+
+        return;
+
+    }
+
+
+    const floor =
+        floors[selectedFloorIndex];
+
+
+    if (!floor) {
+
+        alert("Please select a floor.");
+
+        return;
+
+    }
+
+
     const room =
-        floors[selectedFloorIndex]
-            .rooms[selectedRoomIndex];
+        floor.rooms[selectedRoomIndex];
+
+
+    if (!room) {
+
+        alert("Please select a room.");
+
+        return;
+
+    }
 
 
     room.people.push(person);
@@ -735,9 +833,16 @@ function addPerson(event) {
     displayPeople();
 
 
-    document.getElementById("roomPeopleCount")
-        .textContent =
-        `${room.people.length} People`;
+    const countElement =
+        document.getElementById("roomPeopleCount");
+
+
+    if (countElement) {
+
+        countElement.textContent =
+            `${room.people.length} People`;
+
+    }
 
 
     updateStatistics();
@@ -756,74 +861,85 @@ function openPerson(index) {
     selectedPersonIndex = index;
 
 
-    const person =
-        floors[selectedFloorIndex]
-            .rooms[selectedRoomIndex]
-            .people[index];
-
-
-    const room =
-        floors[selectedFloorIndex]
-            .rooms[selectedRoomIndex];
-
-
     const floor =
         floors[selectedFloorIndex];
 
 
-    document.getElementById("detailsName")
-        .textContent = person.name;
+    const room =
+        floor.rooms[selectedRoomIndex];
 
 
-    document.getElementById("detailsRoom")
-        .textContent =
-        `${floor.name} • Room ${room.number}`;
+    const person =
+        room.people[index];
 
 
-    document.getElementById("detailFullName")
-        .textContent =
-        person.name || "Not provided";
+    if (!person) return;
 
 
-    document.getElementById("detailPhone")
-        .textContent =
-        person.phone || "Not provided";
+    setText(
+        "detailsName",
+        person.name
+    );
 
 
-    document.getElementById("detailType")
-        .textContent =
-        person.type || "Not provided";
+    setText(
+        "detailsRoom",
+        `${floor.name} • Room ${room.number}`
+    );
 
 
-    document.getElementById("detailJoiningDate")
-        .textContent =
-        person.joiningDate || "Not provided";
+    setText(
+        "detailFullName",
+        person.name || "Not provided"
+    );
 
 
-    document.getElementById("detailAddress")
-        .textContent =
-        person.address || "Not provided";
+    setText(
+        "detailPhone",
+        person.phone || "Not provided"
+    );
 
 
-    document.getElementById("detailRent")
-        .textContent =
+    setText(
+        "detailType",
+        person.type || "Not provided"
+    );
+
+
+    setText(
+        "detailJoiningDate",
+        person.joiningDate || "Not provided"
+    );
+
+
+    setText(
+        "detailAddress",
+        person.address || "Not provided"
+    );
+
+
+    setText(
+        "detailRent",
         person.monthlyRent
         ? `₹${Number(person.monthlyRent).toLocaleString("en-IN")}`
-        : "Not provided";
+        : "Not provided"
+    );
 
 
-    document.getElementById("detailDeposit")
-        .textContent =
+    setText(
+        "detailDeposit",
         person.securityDeposit
         ? `₹${Number(person.securityDeposit).toLocaleString("en-IN")}`
-        : "Not provided";
+        : "Not provided"
+    );
 
 
-    document.getElementById("detailDueDate")
-        .textContent =
+    setText(
+        "detailDueDate",
         person.rentDueDay
         ? `Every month on ${person.rentDueDay}`
-        : "Not provided";
+        : "Not provided"
+    );
 
 
     displayRent();
@@ -857,6 +973,7 @@ function getMonthName(monthIndex) {
 
     ];
 
+
     return months[monthIndex];
 
 }
@@ -864,7 +981,9 @@ function getMonthName(monthIndex) {
 
 function getCurrentMonthKey() {
 
-    const date = new Date();
+    const date =
+        new Date();
+
 
     return `${date.getFullYear()}-${String(
         date.getMonth() + 1
@@ -926,10 +1045,19 @@ function getCurrentMonthRent(person) {
 
 function displayRent() {
 
+    const floor =
+        floors[selectedFloorIndex];
+
+
+    const room =
+        floor.rooms[selectedRoomIndex];
+
+
     const person =
-        floors[selectedFloorIndex]
-            .rooms[selectedRoomIndex]
-            .people[selectedPersonIndex];
+        room.people[selectedPersonIndex];
+
+
+    if (!person) return;
 
 
     if (!person.rentHistory) {
@@ -945,6 +1073,13 @@ function displayRent() {
 
     const rentHistory =
         document.getElementById("rentHistory");
+
+
+    if (!currentRentBox || !rentHistory) {
+
+        return;
+
+    }
 
 
     const date =
@@ -1080,13 +1215,17 @@ function displayRent() {
             <div>
 
                 <div class="rent-month">
-                    ${record.monthName}
+
+                    ${escapeHTML(record.monthName)}
                     ${record.year}
+
                 </div>
 
                 <small>
+
                     Paid on:
                     ${formatDate(record.paidDate)}
+
                 </small>
 
             </div>
@@ -1095,12 +1234,16 @@ function displayRent() {
             <div class="rent-details">
 
                 <strong>
+
                     ₹${Number(record.amount)
                         .toLocaleString("en-IN")}
+
                 </strong>
 
                 <div class="rent-paid">
+
                     ✅ Paid
+
                 </div>
 
             </div>
@@ -1116,15 +1259,24 @@ function displayRent() {
 
 
 /* =====================================================
-   MARK RENT AS PAID
+   MARK CURRENT MONTH RENT AS PAID
    ===================================================== */
 
 function markCurrentMonthPaid() {
 
+    const floor =
+        floors[selectedFloorIndex];
+
+
+    const room =
+        floor.rooms[selectedRoomIndex];
+
+
     const person =
-        floors[selectedFloorIndex]
-            .rooms[selectedRoomIndex]
-            .people[selectedPersonIndex];
+        room.people[selectedPersonIndex];
+
+
+    if (!person) return;
 
 
     if (!person.rentHistory) {
@@ -1150,7 +1302,9 @@ function markCurrentMonthPaid() {
 
     if (alreadyPaid) {
 
-        alert("This month's rent is already marked as paid.");
+        alert(
+            "This month's rent is already marked as paid."
+        );
 
         return;
 
@@ -1184,19 +1338,20 @@ function markCurrentMonthPaid() {
 
     displayRent();
 
+    displayRentReminders();
 
     updateStatistics();
 
-    displayRentReminders();
 
-
-    alert("Rent marked as paid successfully! ✅");
+    alert(
+        "Rent marked as paid successfully! ✅"
+    );
 
 }
 
 
 /* =====================================================
-   🔔 RENT REMINDERS
+   RENT REMINDERS
    ===================================================== */
 
 function displayRentReminders() {
@@ -1209,138 +1364,94 @@ function displayRentReminders() {
         document.getElementById("reminderCount");
 
 
-    if (!reminderList || !reminderCount) {
-
-        return;
-
-    }
+    if (!reminderList) return;
 
 
     reminderList.innerHTML = "";
+
+
+    let reminders = [];
 
 
     const today =
         new Date();
 
 
-    const todayDay =
+    const currentDay =
         today.getDate();
 
 
-    const currentMonthKey =
+    const currentMonth =
         getCurrentMonthKey();
 
 
-    let reminders = [];
+    floors.forEach((floor, floorIndex) => {
 
+        floor.rooms.forEach((room, roomIndex) => {
 
-    /* ================= FIND PENDING RENT ================= */
-
-    floors.forEach((floor) => {
-
-        floor.rooms.forEach((room) => {
-
-            room.people.forEach((person) => {
+            room.people.forEach((person, personIndex) => {
 
                 const rent =
-                    Number(person.monthlyRent) || 0;
+                    getCurrentMonthRent(person);
+
+
+                if (rent.status !== "pending") {
+
+                    return;
+
+                }
 
 
                 const dueDay =
                     Number(person.rentDueDay);
 
 
-                /* No rent or due date */
-
-                if (!rent || !dueDay) {
+                if (!dueDay) {
 
                     return;
 
                 }
 
 
-                /* Check if this month's rent is already paid */
-
-                const paid =
-                    person.rentHistory &&
-                    person.rentHistory.some(
-                        record =>
-                            record.month === currentMonthKey
-                    );
+                let status =
+                    "upcoming";
 
 
-                /* Don't show paid rent */
+                if (currentDay > dueDay) {
 
-                if (paid) {
-
-                    return;
+                    status = "overdue";
 
                 }
+                else if (currentDay === dueDay) {
 
-
-                let status = "";
-
-                let statusClass = "";
-
-
-                /* ================= OVERDUE ================= */
-
-                if (todayDay > dueDay) {
-
-                    status =
-                        `🔴 Overdue by ${todayDay - dueDay} day(s)`;
-
-                    statusClass =
-                        "overdue";
-
-                }
-
-
-                /* ================= DUE TODAY ================= */
-
-                else if (todayDay === dueDay) {
-
-                    status =
-                        "🟠 Due Today";
-
-                    statusClass =
-                        "today";
-
-                }
-
-
-                /* ================= UPCOMING ================= */
-
-                else {
-
-                    status =
-                        `🟡 Due in ${dueDay - todayDay} day(s)`;
-
-                    statusClass =
-                        "upcoming";
+                    status = "today";
 
                 }
 
 
                 reminders.push({
 
-                    name:
-                        person.name,
+                    floorIndex,
 
-                    room:
-                        room.number,
+                    roomIndex,
 
-                    floor:
+                    personIndex,
+
+                    floorName:
                         floor.name,
 
-                    rent:
-                        rent,
+                    roomNumber:
+                        room.number,
 
-                    status:
-                        status,
+                    personName:
+                        person.name,
 
-                    statusClass:
-                        statusClass
+                    amount:
+                        Number(person.monthlyRent) || 0,
+
+                    dueDay,
+
+                    status
 
                 });
 
@@ -1351,21 +1462,52 @@ function displayRentReminders() {
     });
 
 
-    /* ================= REMINDER COUNT ================= */
+    /* ================= SORT ================= */
 
-    reminderCount.textContent =
-        reminders.length;
+    reminders.sort((a, b) => {
+
+        const order = {
+
+            overdue: 1,
+
+            today: 2,
+
+            upcoming: 3
+
+        };
 
 
-    /* ================= NO REMINDERS ================= */
+        return order[a.status] -
+               order[b.status];
+
+    });
+
+
+    /* ================= COUNT ================= */
+
+    if (reminderCount) {
+
+        reminderCount.textContent =
+            reminders.length;
+
+    }
+
+
+    /* ================= EMPTY ================= */
 
     if (reminders.length === 0) {
 
         reminderList.innerHTML = `
 
-            <div class="no-reminders">
+            <div class="empty-state">
 
-                ✅ All current rent payments are up to date!
+                <h3>
+                    🎉 No pending rent!
+                </h3>
+
+                <p>
+                    Everyone's rent is up to date.
+                </p>
 
             </div>
 
@@ -1376,7 +1518,7 @@ function displayRentReminders() {
     }
 
 
-    /* ================= DISPLAY REMINDERS ================= */
+    /* ================= DISPLAY ================= */
 
     reminders.forEach(reminder => {
 
@@ -1385,53 +1527,211 @@ function displayRentReminders() {
 
 
         card.className =
-            `reminder-card ${reminder.statusClass}`;
+            "reminder-card";
+
+
+        let statusText =
+            "Due soon";
+
+
+        if (reminder.status === "overdue") {
+
+            statusText =
+                "🔴 OVERDUE";
+
+        }
+        else if (reminder.status === "today") {
+
+            statusText =
+                "🟠 DUE TODAY";
+
+        }
+        else {
+
+            statusText =
+                "🟡 UPCOMING";
+
+        }
 
 
         card.innerHTML = `
 
-            <div>
+            <div class="reminder-icon">
+                🔔
+            </div>
 
-                <div class="reminder-person">
+            <div class="reminder-info">
 
-                    👤 ${reminder.name}
+                <h3>
+                    ${escapeHTML(reminder.personName)}
+                </h3>
 
-                </div>
+                <p>
 
+                    ${escapeHTML(reminder.floorName)}
+                    • Room
+                    ${escapeHTML(reminder.roomNumber)}
 
-                <div class="reminder-room">
+                </p>
 
-                    ${reminder.floor}
-                    • Room ${reminder.room}
+                <p>
 
-                </div>
+                    Rent:
+                    <strong>
+                        ₹${reminder.amount.toLocaleString("en-IN")}
+                    </strong>
+
+                </p>
+
+                <p>
+
+                    Due day:
+                    ${reminder.dueDay}
+
+                </p>
 
             </div>
 
-
             <div class="reminder-status">
 
-                <div>
-
-                    ${reminder.status}
-
-                </div>
-
-
-                <div class="reminder-amount">
-
-                    ₹${reminder.rent.toLocaleString("en-IN")}
-
-                </div>
+                ${statusText}
 
             </div>
 
         `;
 
 
+        card.onclick = function () {
+
+            selectedFloorIndex =
+                reminder.floorIndex;
+
+            selectedRoomIndex =
+                reminder.roomIndex;
+
+            selectedPersonIndex =
+                reminder.personIndex;
+
+
+            openPerson(
+                reminder.personIndex
+            );
+
+        };
+
+
         reminderList.appendChild(card);
 
     });
+
+}
+
+
+/* =====================================================
+   DELETE PERSON
+   ===================================================== */
+
+function deletePerson() {
+
+    const floor =
+        floors[selectedFloorIndex];
+
+
+    if (!floor) {
+
+        alert("Floor not selected.");
+
+        return;
+
+    }
+
+
+    const room =
+        floor.rooms[selectedRoomIndex];
+
+
+    if (!room) {
+
+        alert("Room not selected.");
+
+        return;
+
+    }
+
+
+    const person =
+        room.people[selectedPersonIndex];
+
+
+    if (!person) {
+
+        alert("Person not found.");
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            `Are you sure you want to remove ${person.name} from Room ${room.number}?`
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    /* REMOVE PERSON */
+
+    room.people.splice(
+        selectedPersonIndex,
+        1
+    );
+
+
+    /* SAVE */
+
+    saveData();
+
+
+    /* RESET PERSON SELECTION */
+
+    selectedPersonIndex = null;
+
+
+    /* UPDATE PEOPLE PAGE */
+
+    const countElement =
+        document.getElementById("roomPeopleCount");
+
+
+    if (countElement) {
+
+        countElement.textContent =
+            `${room.people.length} People`;
+
+    }
+
+
+    displayPeople();
+
+    displayRentReminders();
+
+    updateStatistics();
+
+
+    /* GO BACK TO PEOPLE PAGE */
+
+    showPeoplePage();
+
+
+    alert(
+        "Person removed successfully."
+    );
 
 }
 
@@ -1453,6 +1753,13 @@ function formatDate(dateString) {
         new Date(dateString);
 
 
+    if (isNaN(date.getTime())) {
+
+        return dateString;
+
+    }
+
+
     return date.toLocaleDateString(
         "en-IN",
         {
@@ -1466,477 +1773,107 @@ function formatDate(dateString) {
 
 
 /* =====================================================
-   DELETE PERSON
-   ===================================================== */
-
-function deletePerson() {
-
-    const room =
-        floors[selectedFloorIndex]
-            .rooms[selectedRoomIndex];
-
-
-    const person =
-        room.people[selectedPersonIndex];
-
-
-    if (!person) {
-
-        return;
-
-    }
-
-
-    const confirmed =
-        confirm(
-            `Are you sure you want to remove ${person.name} from Room ${room.number}?`
-        );
-
-
-    if (!confirmed) {
-
-        return;
-
-    }
-
-
-    room.people.splice(
-        selectedPersonIndex,
-        1
-    );
-
-
-    saveData();
-
-
-    selectedPersonIndex = null;
-
-
-    document.getElementById("roomPeopleCount")
-        .textContent =
-        `${room.people.length} People`;
-
-
-    updateStatistics();
-
-
-    showPeoplePage();
-
-
-    displayRentReminders();
-
-}
-
-
-/* =====================================================
-   CLOSE MODALS
+   MODAL
    ===================================================== */
 
 function closeModal(id) {
 
-    document.getElementById(id)
-        .style.display = "none";
+    const modal =
+        document.getElementById(id);
+
+
+    if (modal) {
+
+        modal.style.display = "none";
+
+    }
 
 }
 
 
-window.onclick = function(event) {
+window.onclick =
+    function(event) {
 
-    if (
-        event.target.classList.contains("modal")
-    ) {
+        if (
+            event.target.classList.contains("modal")
+        ) {
 
-        event.target.style.display = "none";
+            event.target.style.display =
+                "none";
+
+        }
+
+    };
+
+
+/* =====================================================
+   HELPER FUNCTIONS
+   ===================================================== */
+
+function getValue(id) {
+
+    const element =
+        document.getElementById(id);
+
+
+    if (!element) {
+
+        return "";
 
     }
 
-};
+
+    return element.value.trim();
+
+}
+
+
+function setText(id, value) {
+
+    const element =
+        document.getElementById(id);
+
+
+    if (element) {
+
+        element.textContent = value;
+
+    }
+
+}
+
+
+function escapeHTML(value) {
+
+    if (value === null ||
+        value === undefined) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
 
 
 /* =====================================================
    START APPLICATION
    ===================================================== */
 
-showFloorPage();
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
 
-/* =====================================================
-   DELETE FLOOR SAFELY
-   ===================================================== */
+        showFloorPage();
 
-function deleteFloor(index) {
-
-    const floor = floors[index];
-
-    if (!floor) {
-        return;
-    }
-
-
-    // Don't allow deleting a floor that contains rooms
-    if (floor.rooms && floor.rooms.length > 0) {
-
-        alert(
-            `"${floor.name}" cannot be deleted because it contains rooms.`
-        );
-
-        return;
-    }
-
-
-    const confirmed =
-        confirm(
-            `Are you sure you want to delete "${floor.name}"?`
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    floors.splice(index, 1);
-
-
-    saveData();
-
-
-    displayFloors();
-
-    displayRentReminders();
-
-}
-/* =====================================================
-   ✏️ EDIT FLOOR
-   ===================================================== */
-
-function editFloor(index) {
-
-    const floor = floors[index];
-
-    if (!floor) {
-        return;
-    }
-
-    const newName = prompt(
-        "Enter new floor name:",
-        floor.name
-    );
-
-    if (newName === null) {
-        return;
-    }
-
-    const trimmedName = newName.trim();
-
-    if (!trimmedName) {
-
-        alert("Floor name cannot be empty.");
-
-        return;
-    }
-
-
-    // Check duplicate floor names
-    const duplicate = floors.some(
-        (item, i) =>
-            i !== index &&
-            item.name.toLowerCase() ===
-            trimmedName.toLowerCase()
-    );
-
-
-    if (duplicate) {
-
-        alert(
-            `"${trimmedName}" already exists.`
-        );
-
-        return;
-    }
-
-
-    floor.name = trimmedName;
-
-
-    saveData();
-
-    displayFloors();
-
-    displayRentReminders();
-
-
-    // Update room page if this floor is currently selected
-    if (selectedFloorIndex === index) {
-
-        document.getElementById(
-            "selectedFloorName"
-        ).textContent = trimmedName;
+        displayRentReminders();
 
     }
-
-}
-/* =====================================================
-   ✏️ EDIT PERSON
-   ===================================================== */
-
-function editPerson(index) {
-
-    const room =
-        floors[selectedFloorIndex]
-            .rooms[selectedRoomIndex];
-
-    const person = room.people[index];
-
-    if (!person) {
-        return;
-    }
-
-
-    const name = prompt(
-        "Person name:",
-        person.name || ""
-    );
-
-    if (name === null) {
-        return;
-    }
-
-
-    const phone = prompt(
-        "Phone number:",
-        person.phone || ""
-    );
-
-    if (phone === null) {
-        return;
-    }
-
-
-    const type = prompt(
-        "Person type:",
-        person.type || ""
-    );
-
-    if (type === null) {
-        return;
-    }
-
-
-    const address = prompt(
-        "Address:",
-        person.address || ""
-    );
-
-    if (address === null) {
-        return;
-    }
-
-
-    const joiningDate = prompt(
-        "Joining date (YYYY-MM-DD):",
-        person.joiningDate || ""
-    );
-
-    if (joiningDate === null) {
-        return;
-    }
-
-
-    const monthlyRent = prompt(
-        "Monthly rent:",
-        person.monthlyRent || ""
-    );
-
-    if (monthlyRent === null) {
-        return;
-    }
-
-
-    const securityDeposit = prompt(
-        "Security deposit:",
-        person.securityDeposit || ""
-    );
-
-    if (securityDeposit === null) {
-        return;
-    }
-
-
-    const rentDueDay = prompt(
-        "Rent due day (1-31):",
-        person.rentDueDay || ""
-    );
-
-    if (rentDueDay === null) {
-        return;
-    }
-
-
-    // Update person
-    person.name = name.trim();
-
-    person.phone = phone.trim();
-
-    person.type = type.trim();
-
-    person.address = address.trim();
-
-    person.joiningDate = joiningDate.trim();
-
-    person.monthlyRent = monthlyRent.trim();
-
-    person.securityDeposit =
-        securityDeposit.trim();
-
-    person.rentDueDay =
-        rentDueDay.trim();
-
-
-    saveData();
-
-
-    displayPeople();
-
-    displayRentReminders();
-
-    updateStatistics();
-
-
-    // Refresh details if necessary
-    openPerson(index);
-
-
-    alert("Person details updated successfully! ✅");
-
-}
-/* =====================================================
-   EDIT ROOM
-   ===================================================== */
-
-function openEditRoomModal() {
-
-    const floor =
-        floors[selectedFloorIndex];
-
-    if (!floor) {
-        alert("Floor not found.");
-        return;
-    }
-
-    const room =
-        floor.rooms[selectedRoomIndex];
-
-    if (!room) {
-        alert("Room not found.");
-        return;
-    }
-
-    document.getElementById("editRoomNumber")
-        .value = room.number;
-
-    document.getElementById("editRoomModal")
-        .style.display = "flex";
-}
-
-
-/* =====================================================
-   SAVE EDITED ROOM
-   ===================================================== */
-
-function editRoom(event) {
-
-    event.preventDefault();
-
-    const newNumber =
-        document.getElementById("editRoomNumber")
-            .value.trim();
-
-    if (!newNumber) {
-        alert("Please enter a room number.");
-        return;
-    }
-
-    const floor =
-        floors[selectedFloorIndex];
-
-    const room =
-        floor.rooms[selectedRoomIndex];
-
-    if (!room) {
-        alert("Room not found.");
-        return;
-    }
-
-    room.number = newNumber;
-
-    saveData();
-
-    document.getElementById("selectedRoomName")
-        .textContent = `Room ${room.number}`;
-
-    closeModal("editRoomModal");
-
-    displayRooms();
-
-    alert("Room updated successfully! ✅");
-}
-/* =====================================================
-   EDIT CURRENT ROOM
-   ===================================================== */
-
-function editCurrentRoom() {
-
-    const floor = floors[selectedFloorIndex];
-
-    if (!floor) {
-        alert("Floor not found.");
-        return;
-    }
-
-    const room = floor.rooms[selectedRoomIndex];
-
-    if (!room) {
-        alert("Room not found.");
-        return;
-    }
-
-    const newNumber = prompt(
-        "Enter new room number:",
-        room.number
-    );
-
-    if (newNumber === null) {
-        return;
-    }
-
-    const trimmedNumber = newNumber.trim();
-
-    if (!trimmedNumber) {
-        alert("Room number cannot be empty.");
-        return;
-    }
-
-    // Check if another room already has this number
-    const duplicate = floor.rooms.some(
-        (item, index) =>
-            index !== selectedRoomIndex &&
-            String(item.number).toLowerCase() ===
-            trimmedNumber.toLowerCase()
-    );
-
-    if (duplicate) {
-        alert(`Room ${trimmedNumber} already exists on this floor.`);
-        return;
-    }
-
-    room.number = trimmedNumber;
-
-    saveData();
-
-    document.getElementById("selectedRoomName")
-        .textContent = `Room ${room.number}`;
-
-    displayRooms();
-
-    alert("Room updated successfully! ✅");
-}
+);

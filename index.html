@@ -8,9 +8,19 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Room Manager</title>
+    <meta name="theme-color"
+          content="#2563eb">
 
+    <meta name="description"
+          content="Floor and Rent Manager">
+
+    <title>Floor & Rent Manager</title>
+
+    <!-- Your CSS -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
 
 </head>
 
@@ -18,151 +28,179 @@
 <body>
 
 
-<!-- ================= HEADER ================= -->
+<!-- =====================================================
+     MAIN APP
+     ===================================================== -->
 
-<header class="header">
-
-    <div>
-
-        <h1>🏠 Room Manager</h1>
-
-        <p>
-            Building & Tenant Management
-        </p>
-
-    </div>
+<div class="app">
 
 
-    <button
-        class="add-main-btn"
-        onclick="openAddFloorModal()">
+    <!-- =================================================
+         HEADER
+         ================================================= -->
 
-        + Add Floor
+    <header class="app-header">
 
-    </button>
+        <div>
 
-</header>
-
-
-
-<!-- ================= MAIN ================= -->
-
-<main class="container">
-
-
-    <!-- ================= FLOOR PAGE ================= -->
-
-    <section id="floorPage">
-
-
-        <div class="page-title">
-
-            <h2>
-                My Building
-            </h2>
+            <h1>
+                🏢 Floor & Rent Manager
+            </h1>
 
             <p>
-                Select a floor to view its rooms
+                Manage floors, rooms, people and rent
             </p>
 
         </div>
 
+    </header>
 
 
-        <!-- ================= STATISTICS ================= -->
 
-        <div class="statistics">
+    <!-- =================================================
+         STATISTICS
+         ================================================= -->
+
+    <section class="statistics">
 
 
-            <div class="stat-card">
+        <div class="stat-card">
 
-                <span>🏢</span>
+            <div class="stat-icon">
+                🏢
+            </div>
 
-                <div>
+            <div>
 
-                    <small>
-                        Total Floors
-                    </small>
+                <span>
+                    Total Floors
+                </span>
 
-                    <strong id="totalFloors">
-                        0
-                    </strong>
+                <strong id="totalFloors">
+                    0
+                </strong>
 
-                </div>
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🚪
+            </div>
+
+            <div>
+
+                <span>
+                    Total Rooms
+                </span>
+
+                <strong id="totalRooms">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                👥
+            </div>
+
+            <div>
+
+                <span>
+                    Total People
+                </span>
+
+                <strong id="totalPeople">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                💰
+            </div>
+
+            <div>
+
+                <span>
+                    Pending Rent
+                </span>
+
+                <strong id="totalPendingRent">
+                    ₹0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         FLOOR PAGE
+         ================================================= -->
+
+    <section id="floorPage"
+             class="page">
+
+
+        <div class="page-header">
+
+
+            <div>
+
+                <h2>
+                    🏢 Floors
+                </h2>
+
+                <p>
+                    Select a floor to view its rooms
+                </p>
 
             </div>
 
 
+            <button
+                class="primary-btn"
+                onclick="openAddFloorModal()">
 
-            <div class="stat-card">
+                + Add Floor
 
-                <span>🚪</span>
-
-                <div>
-
-                    <small>
-                        Total Rooms
-                    </small>
-
-                    <strong id="totalRooms">
-                        0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="stat-card">
-
-                <span>👥</span>
-
-                <div>
-
-                    <small>
-                        Total People
-                    </small>
-
-                    <strong id="totalPeople">
-                        0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="stat-card">
-
-                <span>💰</span>
-
-                <div>
-
-                    <small>
-                        Pending Rent
-                    </small>
-
-                    <strong id="totalPendingRent">
-                        ₹0
-                    </strong>
-
-                </div>
-
-            </div>
+            </button>
 
 
         </div>
 
 
 
-        <!-- ================= RENT REMINDERS ================= -->
+        <!-- =================================================
+             RENT REMINDERS
+             ================================================= -->
 
         <div class="reminder-section">
 
 
             <div class="reminder-header">
+
 
                 <div>
 
@@ -185,6 +223,7 @@
 
                 </span>
 
+
             </div>
 
 
@@ -200,7 +239,9 @@
 
 
 
-        <!-- ================= FLOOR LIST ================= -->
+        <!-- =================================================
+             FLOOR LIST
+             ================================================= -->
 
         <div
             id="floorList"
@@ -213,32 +254,39 @@
 
 
 
-
-    <!-- ================= ROOM PAGE ================= -->
+    <!-- =================================================
+         ROOM PAGE
+         ================================================= -->
 
     <section
         id="roomPage"
-        class="hidden">
+        class="page hidden">
 
 
-        <button
-            class="back-btn"
-            onclick="showFloorPage()">
-
-            ← Back to Floors
-
-        </button>
-
-
-
-        <div class="page-heading">
+        <div class="page-header">
 
 
             <div>
 
-                <h2 id="selectedFloorName"></h2>
 
-                <p id="floorRoomCount"></p>
+                <button
+                    class="back-btn"
+                    onclick="showFloorPage()">
+
+                    ← Back to Floors
+
+                </button>
+
+
+                <h2 id="selectedFloorName">
+                    Floor
+                </h2>
+
+
+                <p id="floorRoomCount">
+                    0 Rooms
+                </p>
+
 
             </div>
 
@@ -268,43 +316,39 @@
 
 
 
-
-    <!-- ================= PEOPLE PAGE ================= -->
+    <!-- =================================================
+         PEOPLE PAGE
+         ================================================= -->
 
     <section
         id="peoplePage"
-        class="hidden">
+        class="page hidden">
 
 
-        <button
-            class="back-btn"
-            onclick="showRoomPage()">
-
-            ← Back to Rooms
-
-        </button>
-
-
-
-        <div class="page-heading">
+        <div class="page-header">
 
 
             <div>
 
-                <h2 id="selectedRoomName"></h2>
 
-                <p id="roomPeopleCount"></p>
+                <button
+                    class="back-btn"
+                    onclick="showRoomPage()">
 
-                <div class="room-actions">
-    <button class="edit-room-btn"
-     onclick="editCurrentRoom()">
-        ✏️ Edit Room
-    </button>
+                    ← Back to Rooms
 
-    <button class="delete-room-btn" onclick="deleteRoom()">
-        🗑️ Delete Room
-    </button>
-</div>
+                </button>
+
+
+                <h2 id="selectedRoomName">
+                    Room
+                </h2>
+
+
+                <p id="roomPeopleCount">
+                    0 People
+                </p>
+
 
             </div>
 
@@ -325,7 +369,7 @@
 
         <div
             id="peopleList"
-            class="people-grid">
+            class="people-list">
 
         </div>
 
@@ -334,210 +378,127 @@
 
 
 
-
-    <!-- ================= PERSON DETAILS ================= -->
+    <!-- =================================================
+         PERSON DETAILS PAGE
+         ================================================= -->
 
     <section
         id="detailsPage"
-        class="hidden">
+        class="page hidden">
 
 
-        <button
-            class="back-btn"
-            onclick="showPeoplePage()">
-
-            ← Back to People
-
-        </button>
+        <div class="page-header">
 
 
+            <div>
 
-        <div class="details-container">
-
-
-            <!-- ================= PERSON HEADER ================= -->
-
-            <div class="details-header">
-
-
-                <div class="person-icon">
-
-                    👤
-
-                </div>
-
-
-                <div>
-
-                    <h2 id="detailsName"></h2>
-
-                    <p id="detailsRoom"></p>
-
-                </div>
-
-
-            </div>
-
-
-
-            <!-- ================= DELETE PERSON ================= -->
-
-            <div class="person-action-buttons">
 
                 <button
-                    class="delete-person-btn"
-                    onclick="deletePerson()">
+                    class="back-btn"
+                    onclick="showPeoplePage()">
 
-                    🗑️ Delete Person
+                    ← Back to People
 
                 </button>
 
+
+                <h2 id="detailsName">
+                    Person Details
+                </h2>
+
+
+                <p id="detailsRoom">
+                    Room
+                </p>
+
+
             </div>
 
 
+        </div>
 
-            <!-- ================= PERSON INFORMATION ================= -->
+
+
+        <!-- =================================================
+             PERSONAL INFORMATION
+             ================================================= -->
+
+        <div class="details-card">
+
+
+            <h3>
+                👤 Personal Information
+            </h3>
+
 
             <div class="details-grid">
 
 
-                <div class="detail-box">
+                <div class="detail-item">
 
-                    <label>
+                    <span>
                         Full Name
-                    </label>
+                    </span>
 
-                    <p id="detailFullName"></p>
-
-                </div>
-
-
-
-                <div class="detail-box">
-
-                    <label>
-                        Phone Number
-                    </label>
-
-                    <p id="detailPhone"></p>
+                    <strong id="detailFullName">
+                        Not provided
+                    </strong>
 
                 </div>
 
 
 
-                <div class="detail-box">
+                <div class="detail-item">
 
-                    <label>
-                        Person Type
-                    </label>
+                    <span>
+                        Phone
+                    </span>
 
-                    <p id="detailType"></p>
+                    <strong id="detailPhone">
+                        Not provided
+                    </strong>
 
                 </div>
 
 
 
-                <div class="detail-box">
+                <div class="detail-item">
 
-                    <label>
+                    <span>
+                        Type
+                    </span>
+
+                    <strong id="detailType">
+                        Not provided
+                    </strong>
+
+                </div>
+
+
+
+                <div class="detail-item">
+
+                    <span>
                         Joining Date
-                    </label>
+                    </span>
 
-                    <p id="detailJoiningDate"></p>
-
-                </div>
-
-
-
-                <div class="detail-box full-width">
-
-                    <label>
-                        Permanent Address
-                    </label>
-
-                    <p id="detailAddress"></p>
+                    <strong id="detailJoiningDate">
+                        Not provided
+                    </strong>
 
                 </div>
 
 
 
-                <div class="detail-box">
+                <div class="detail-item full-width">
 
-                    <label>
-                        Monthly Rent
-                    </label>
+                    <span>
+                        Address
+                    </span>
 
-                    <p id="detailRent"></p>
-
-                </div>
-
-
-
-                <div class="detail-box">
-
-                    <label>
-                        Security Deposit
-                    </label>
-
-                    <p id="detailDeposit"></p>
-
-                </div>
-
-
-
-                <div class="detail-box">
-
-                    <label>
-                        Rent Due Day
-                    </label>
-
-                    <p id="detailDueDate"></p>
-
-                </div>
-
-
-            </div>
-
-
-
-
-            <!-- ================= RENT MANAGEMENT ================= -->
-
-            <div class="rent-section">
-
-
-                <div class="rent-title">
-
-                    <h3>
-                        💰 Rent Management
-                    </h3>
-
-                </div>
-
-
-
-                <!-- CURRENT MONTH -->
-
-                <div
-                    id="currentRentBox"
-                    class="current-rent-box">
-
-                </div>
-
-
-
-                <!-- RENT HISTORY -->
-
-                <h3 class="history-heading">
-
-                    📋 Rent History
-
-                </h3>
-
-
-                <div
-                    id="rentHistory"
-                    class="rent-history">
+                    <strong id="detailAddress">
+                        Not provided
+                    </strong>
 
                 </div>
 
@@ -548,23 +509,174 @@
         </div>
 
 
-    </section>
+
+        <!-- =================================================
+             RENT INFORMATION
+             ================================================= -->
+
+        <div class="details-card">
+
+
+            <h3>
+                💰 Rent Information
+            </h3>
+
+
+            <div class="details-grid">
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Monthly Rent
+                    </span>
+
+                    <strong id="detailRent">
+                        Not provided
+                    </strong>
+
+                </div>
 
 
 
+                <div class="detail-item">
 
-    <!-- ================= ADD FLOOR MODAL ================= -->
+                    <span>
+                        Security Deposit
+                    </span>
 
-    <div
-        id="floorModal"
-        class="modal">
+                    <strong id="detailDeposit">
+                        Not provided
+                    </strong>
+
+                </div>
 
 
-        <div class="modal-content">
+
+                <div class="detail-item">
+
+                    <span>
+                        Rent Due Date
+                    </span>
+
+                    <strong id="detailDueDate">
+                        Not provided
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             CURRENT MONTH RENT
+             ================================================= -->
+
+        <div class="details-card">
+
+
+            <h3>
+                📅 Current Month Rent
+            </h3>
+
+
+            <div
+                id="currentRentBox"
+                class="current-rent-box">
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             RENT HISTORY
+             ================================================= -->
+
+        <div class="details-card">
+
+
+            <h3>
+                📋 Rent History
+            </h3>
+
+
+            <div
+                id="rentHistory"
+                class="rent-history">
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             DELETE PERSON
+             ================================================= -->
+
+        <div class="details-card danger-card">
+
+
+            <h3>
+                🗑️ Remove Person
+            </h3>
+
+
+            <p>
+                Remove this person from the room.
+            </p>
 
 
             <button
-                class="close-btn"
+                class="delete-btn"
+                onclick="deletePerson()">
+
+                🗑️ Delete Person
+
+            </button>
+
+
+        </div>
+
+
+    </section>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     ADD FLOOR MODAL
+     ===================================================== -->
+
+<div
+    id="floorModal"
+    class="modal">
+
+
+    <div class="modal-content">
+
+
+        <div class="modal-header">
+
+
+            <h2>
+                🏢 Add Floor
+            </h2>
+
+
+            <button
+                type="button"
                 onclick="closeModal('floorModal')">
 
                 ×
@@ -572,58 +684,83 @@
             </button>
 
 
-            <h2>
-                Add Floor
-            </h2>
+        </div>
 
 
-            <form
-                onsubmit="addFloor(event)">
+
+        <form
+            onsubmit="addFloor(event)">
 
 
-                <label>
-                    Floor Name
-                </label>
+            <label for="floorName">
+                Floor Name
+            </label>
 
 
-                <input
-                    type="text"
-                    id="floorName"
-                    placeholder="Example: Ground Floor"
-                    required>
+            <input
+                type="text"
+                id="floorName"
+                placeholder="Example: Ground Floor"
+                required>
+
+
+            <div class="modal-actions">
 
 
                 <button
-                    class="save-btn"
-                    type="submit">
+                    type="button"
+                    class="secondary-btn"
+                    onclick="closeModal('floorModal')">
 
-                    Save Floor
+                    Cancel
 
                 </button>
 
 
-            </form>
+                <button
+                    type="submit"
+                    class="primary-btn">
+
+                    Add Floor
+
+                </button>
 
 
-        </div>
+            </div>
+
+
+        </form>
+
 
     </div>
 
 
+</div>
 
 
-    <!-- ================= ADD ROOM MODAL ================= -->
 
-    <div
-        id="roomModal"
-        class="modal">
+<!-- =====================================================
+     ADD ROOM MODAL
+     ===================================================== -->
+
+<div
+    id="roomModal"
+    class="modal">
 
 
-        <div class="modal-content">
+    <div class="modal-content">
+
+
+        <div class="modal-header">
+
+
+            <h2>
+                🚪 Add Room
+            </h2>
 
 
             <button
-                class="close-btn"
+                type="button"
                 onclick="closeModal('roomModal')">
 
                 ×
@@ -631,99 +768,83 @@
             </button>
 
 
-            <h2>
-                Add Room
-            </h2>
-
-
-            <form
-                onsubmit="addRoom(event)">
-
-
-                <label>
-                    Room Number
-                </label>
-
-
-                <input
-                    type="text"
-                    id="roomNumber"
-                    placeholder="Example: 101"
-                    required>
-
-
-                <button
-                    class="save-btn"
-                    type="submit">
-
-                    Save Room
-
-                </button>
-
-
-            </form>
-
-
         </div>
 
-    </div>
 
 
+        <form
+            onsubmit="addRoom(event)">
 
 
-    <!-- ================= ADD PERSON MODAL ================= -->
-
-    <div
-        id="personModal"
-        class="modal">
-
-       <!-- ================= EDIT ROOM MODAL ================= -->
-
-<div id="editRoomModal" class="modal">
-
-    <div class="modal-content">
-
-        <h2>✏️ Edit Room</h2>
-
-        <form onsubmit="editRoom(event)">
-
-            <label>
+            <label for="roomNumber">
                 Room Number
             </label>
 
+
             <input
                 type="text"
-                id="editRoomNumber"
-                placeholder="Enter room number"
-                required
-            >
+                id="roomNumber"
+                placeholder="Example: 101"
+                required>
+
 
             <div class="modal-actions">
 
+
                 <button
                     type="button"
-                    onclick="closeModal('editRoomModal')">
+                    class="secondary-btn"
+                    onclick="closeModal('roomModal')">
+
                     Cancel
+
                 </button>
 
-                <button type="submit">
-                    Save Changes
+
+                <button
+                    type="submit"
+                    class="primary-btn">
+
+                    Add Room
+
                 </button>
+
 
             </div>
 
+
         </form>
+
 
     </div>
 
-</div> 
 
-        <div
-            class="modal-content large-modal">
+</div>
+
+
+
+<!-- =====================================================
+     ADD PERSON MODAL
+     ===================================================== -->
+
+<div
+    id="personModal"
+    class="modal">
+
+
+    <div class="modal-content large-modal">
+
+
+        <div class="modal-header">
+
+
+            <h2>
+                👤 Add Person
+            </h2>
 
 
             <button
-                class="close-btn"
+                type="button"
                 onclick="closeModal('personModal')">
 
                 ×
@@ -731,151 +852,223 @@
             </button>
 
 
-            <h2>
-                Add Person
-            </h2>
+        </div>
 
 
 
-            <form
-                onsubmit="addPerson(event)">
+        <form
+            onsubmit="addPerson(event)">
 
 
-                <label>
-                    Full Name
-                </label>
+            <!-- NAME -->
+
+            <label for="personName">
+                Full Name
+            </label>
 
 
-                <input
-                    type="text"
-                    id="personName"
-                    placeholder="Enter full name"
-                    required>
-
-
-
-                <label>
-                    Phone Number
-                </label>
-
-
-                <input
-                    type="tel"
-                    id="personPhone"
-                    placeholder="Enter phone number">
+            <input
+                type="text"
+                id="personName"
+                placeholder="Enter full name"
+                required>
 
 
 
-                <label>
-                    Person Type
-                </label>
+            <!-- PHONE -->
+
+            <label for="personPhone">
+                Phone Number
+            </label>
 
 
-                <select id="personType">
-
-
-                    <option value="Student">
-                        Student
-                    </option>
-
-
-                    <option value="Family Member">
-                        Family Member
-                    </option>
-
-
-                    <option value="Other">
-                        Other
-                    </option>
-
-
-                </select>
+            <input
+                type="tel"
+                id="personPhone"
+                placeholder="Enter phone number">
 
 
 
-                <label>
-                    Permanent Address
-                </label>
+            <!-- TYPE -->
+
+            <label for="personType">
+                Person Type
+            </label>
 
 
-                <textarea
-                    id="personAddress"
-                    placeholder="Enter permanent address"
-                    rows="3"></textarea>
+            <select id="personType">
 
+                <option value="Student">
+                    Student
+                </option>
 
+                <option value="Family">
+                    Family
+                </option>
 
-                <label>
-                    Joining Date
-                </label>
+                <option value="Working">
+                    Working
+                </option>
 
+                <option value="Other">
+                    Other
+                </option>
 
-                <input
-                    type="date"
-                    id="joiningDate">
-
-
-
-                <label>
-                    Monthly Rent
-                </label>
-
-
-                <input
-                    type="number"
-                    id="monthlyRent"
-                    placeholder="Example: 5000"
-                    min="0">
+            </select>
 
 
 
-                <label>
-                    Security Deposit
-                </label>
+            <!-- ADDRESS -->
+
+            <label for="personAddress">
+                Address
+            </label>
 
 
-                <input
-                    type="number"
-                    id="securityDeposit"
-                    placeholder="Example: 10000"
-                    min="0">
+            <textarea
+                id="personAddress"
+                rows="3"
+                placeholder="Enter permanent address"></textarea>
 
 
 
-                <label>
-                    Rent Due Day
-                </label>
+            <!-- JOINING DATE -->
+
+            <label for="joiningDate">
+                Joining Date
+            </label>
 
 
-                <input
-                    type="number"
-                    id="rentDueDay"
-                    placeholder="Example: 5"
-                    min="1"
-                    max="31">
+            <input
+                type="date"
+                id="joiningDate">
 
+
+
+            <!-- MONTHLY RENT -->
+
+            <label for="monthlyRent">
+                Monthly Rent
+            </label>
+
+
+            <input
+                type="number"
+                id="monthlyRent"
+                placeholder="Example: 5000"
+                min="0">
+
+
+
+            <!-- SECURITY DEPOSIT -->
+
+            <label for="securityDeposit">
+                Security Deposit
+            </label>
+
+
+            <input
+                type="number"
+                id="securityDeposit"
+                placeholder="Example: 10000"
+                min="0">
+
+
+
+            <!-- RENT DUE DAY -->
+
+            <label for="rentDueDay">
+                Rent Due Day
+            </label>
+
+
+            <input
+                type="number"
+                id="rentDueDay"
+                placeholder="Example: 5"
+                min="1"
+                max="31">
+
+
+
+            <!-- BUTTONS -->
+
+            <div class="modal-actions">
 
 
                 <button
-                    class="save-btn"
-                    type="submit">
+                    type="button"
+                    class="secondary-btn"
+                    onclick="closeModal('personModal')">
 
-                    Save Person
+                    Cancel
 
                 </button>
 
 
-            </form>
+                <button
+                    type="submit"
+                    class="primary-btn">
+
+                    Add Person
+
+                </button>
 
 
-        </div>
+            </div>
+
+
+        </form>
+
 
     </div>
 
 
+</div>
 
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
 
 <script src="script.js"></script>
+
+
+
+<!-- =====================================================
+     SERVICE WORKER / PWA
+     ===================================================== -->
+
+<script>
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", function () {
+
+        navigator.serviceWorker
+            .register("./service-worker.js")
+            .then(function () {
+
+                console.log(
+                    "Floor & Rent Manager is ready."
+                );
+
+            })
+            .catch(function (error) {
+
+                console.log(
+                    "Service Worker error:",
+                    error
+                );
+
+            });
+
+    });
+
+}
+
+</script>
 
 
 </body>
